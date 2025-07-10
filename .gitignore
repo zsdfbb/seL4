@@ -32,3 +32,7 @@ manual/generated
 
 # Emacs backups
 *~
+
+# Clangd cache
+.cache/
+compile_commands.json

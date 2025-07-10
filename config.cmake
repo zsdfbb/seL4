@@ -262,6 +262,14 @@ config_option(
 )
 
 config_option(
+    UserPointerAuthentication AARCH64_PTR_AUTH
+    "Enable pointer authentication for user space. Note that this functionality depends on a \
+    hardware feature exclusive to ARM v8.2 and subsequent architectures. Ensure your hardware \
+    meets this requirement before enabling."
+    DEFAULT ON
+    DEPENDS "KernelSel4ArchAarch64"
+)
+config_option(
     HardwareDebugAPI HARDWARE_DEBUG_API
     "Builds the kernel with support for a userspace debug API, which can \
     allows userspace processes to set breakpoints, watchpoints and to \
