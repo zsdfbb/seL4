@@ -958,13 +958,12 @@ exception_t decodeReadRegisters(cap_t cap, word_t length, bool_t call,
     flags = getSyscallArg(0, buffer);
     n     = getSyscallArg(1, buffer);
 
-    if (n < 1 || n > n_frameRegisters + n_gpRegisters) {
+    if (n < 1 || n > n_allUserCtxRegs) {
         userError("TCB ReadRegisters: Attempted to read an invalid number of registers (%d).",
                   (int)n);
         current_syscall_error.type = seL4_RangeError;
         current_syscall_error.rangeErrorMin = 1;
-        current_syscall_error.rangeErrorMax = n_frameRegisters +
-                                              n_gpRegisters;
+        current_syscall_error.rangeErrorMax = n_allUserCtxRegs;
         return EXCEPTION_SYSCALL_ERROR;
     }
 
@@ -2016,24 +2015,28 @@ exception_t invokeTCB_WriteRegisters(tcb_t *dest, bool_t resumeTarget,
         return e;
     }
 
-    if (n > n_frameRegisters + n_gpRegisters) {
-        n = n_frameRegisters + n_gpRegisters;
-    }
-
     archInfo = Arch_getSanitiseRegisterInfo(dest);
 
-    for (i = 0; i < n_frameRegisters && i < n; i++) {
-        /* Offset of 2 to get past the initial syscall arguments */
-        setRegister(dest, frameRegisters[i],
-                    sanitiseRegister(frameRegisters[i],
-                                     getSyscallArg(i + 2, buffer), archInfo));
+    word_t writeRegArrSize = writeRegistersArraySize;
+    if (ksCurThread == TCB_PTR(rootserver.tcb + TCB_OFFSET)) {
+        writeRegArrSize = writeRegistersArraySizeExt;
     }
 
-    for (i = 0; i < n_gpRegisters && i + n_frameRegisters < n; i++) {
-        setRegister(dest, gpRegisters[i],
-                    sanitiseRegister(gpRegisters[i],
-                                     getSyscallArg(i + n_frameRegisters + 2,
-                                                   buffer), archInfo));
+    word_t regsCount = 0;
+    for (i = 0; i < writeRegArrSize; i++) {
+        regsCount += writeRegistersArray[i].count;
+    }
+    n = n > regsCount ? regsCount : n;
+
+    word_t bi = 0;
+    for (i = 0; i < writeRegArrSize && bi < n; i++) {
+        const register_t *regs = writeRegistersArray[i].regs;
+        word_t regs_count = writeRegistersArray[i].count;
+
+        for (word_t ri = 0; ri < regs_count && bi < n; ri++, bi++) {
+            setRegister(dest, regs[ri],
+                        sanitiseRegister(regs[ri], getSyscallArg(bi + 2, buffer), archInfo));
+        }
     }
 
     pc = getRestartPC(dest);
