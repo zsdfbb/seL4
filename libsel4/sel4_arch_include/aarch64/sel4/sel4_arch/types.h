@@ -21,6 +21,12 @@ typedef struct seL4_UserContext_ {
     seL4_Word x9, x10, x11, x12, x13, x14, x15, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28;
     /* Thread ID registers */
     seL4_Word tpidr_el0, tpidrro_el0;
+    /* Pointer authentication registers */
+    seL4_Word APDAKeyHi_EL1, APDAKeyLo_EL1,
+             APDBKeyHi_EL1, APDBKeyLo_EL1,
+             APGAKeyHi_EL1, APGAKeyLo_EL1,
+             APIAKeyHi_EL1, APIAKeyLo_EL1,
+             APIBKeyHi_EL1, APIBKeyLo_EL1;
 } seL4_UserContext;
 
 typedef struct seL4_ARM_SMCContext_ {

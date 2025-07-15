@@ -43,6 +43,16 @@
         <member name="x28"/>
         <member name="tpidr_el0"/>
         <member name="tpidrro_el0"/>
+        <member name="APDAKeyHi_EL1"/>
+        <member name="APDAKeyLo_EL1"/>
+        <member name="APDBKeyHi_EL1"/>
+        <member name="APDBKeyLo_EL1"/>
+        <member name="APGAKeyHi_EL1"/>
+        <member name="APGAKeyLo_EL1"/>
+        <member name="APIAKeyHi_EL1"/>
+        <member name="APIAKeyLo_EL1"/>
+        <member name="APIBKeyHi_EL1"/>
+        <member name="APIBKeyLo_EL1"/>
     </struct>
     <struct name="seL4_ARM_SMCContext">
         <member name="x0"/>
