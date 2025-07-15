@@ -39,6 +39,8 @@ BOOT_BSS static volatile _Atomic int node_boot_lock;
 
 BOOT_BSS static region_t reserved[NUM_RESERVED_REGIONS];
 
+BOOT_BSS word_t cpu_features[n_cpuFeatureSize];
+
 BOOT_CODE static bool_t arch_init_freemem(p_region_t ui_p_reg,
                                           p_region_t dtb_p_reg,
                                           v_region_t it_v_reg,
@@ -250,6 +252,11 @@ BOOT_CODE static bool_t init_cpu(void)
     armv_init_user_access();
 
     initTimer();
+
+#ifdef CONFIG_ARCH_AARCH64
+    printf("\n=================================================\n");
+    cpu_features[aarch64PointerAuthention] = cpu_has_ptr_auth();
+#endif
 
     return true;
 }

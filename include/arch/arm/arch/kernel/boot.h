@@ -21,3 +21,9 @@ void init_kernel(
     uint32_t dtb_size
 );
 
+enum cpuFeatureSize {
+    aarch64PointerAuthention = 0,
+    n_cpuFeatureSize
+};
+
+extern word_t cpu_features[n_cpuFeatureSize];
