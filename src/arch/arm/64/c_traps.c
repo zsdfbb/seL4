@@ -11,9 +11,29 @@
 #include <api/syscall.h>
 #include <linker.h>
 #include <machine/fpu.h>
+#include <machine/registerset.h>
 
 #include <benchmark/benchmark_track.h>
 #include <benchmark/benchmark_utilisation.h>
+
+/* Using inline functions to avoid PAC signature verification caused by function call. */
+static inline void restore_user_ptr_auth_context(tcb_t * tcb)
+{
+    word_t *regs = &tcb->tcbArch.tcbContext.registers[0];
+
+    write_sysreg_s(regs[APIAKeyHi_EL1], SYS_APIAKEYHI_EL1);
+    write_sysreg_s(regs[APIAKeyLo_EL1], SYS_APIAKEYLO_EL1);
+    write_sysreg_s(regs[APIBKeyHi_EL1], SYS_APIBKEYHI_EL1);
+    write_sysreg_s(regs[APIBKeyLo_EL1], SYS_APIBKEYLO_EL1);
+
+    write_sysreg_s(regs[APDAKeyHi_EL1], SYS_APDAKEYHI_EL1);
+    write_sysreg_s(regs[APDAKeyLo_EL1], SYS_APDAKEYLO_EL1);
+    write_sysreg_s(regs[APDBKeyHi_EL1], SYS_APDBKEYHI_EL1);
+    write_sysreg_s(regs[APDBKeyLo_EL1], SYS_APDBKEYLO_EL1);
+
+    write_sysreg_s(regs[APGAKeyHi_EL1], SYS_APGAKEYHI_EL1);
+    write_sysreg_s(regs[APGAKeyLo_EL1], SYS_APGAKEYLO_EL1);
+}
 
 /** DONT_TRANSLATE */
 void VISIBLE NORETURN restore_user_context(void)
@@ -29,6 +49,10 @@ void VISIBLE NORETURN restore_user_context(void)
 #endif /* CONFIG_HAVE_FPU */
 
     NODE_UNLOCK_IF_HELD;
+
+#ifdef CONFIG_AARCH64_PTR_AUTH
+    restore_user_ptr_auth_context(ksCurThread);
+#endif
 
     asm volatile(
         "mov     sp, %0                     \n"

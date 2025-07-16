@@ -399,6 +399,19 @@ static inline void Arch_initContext(user_context_t *context)
 #define SYS_ID_AA64ISAR1_EL1    sys_reg_code(3, 0, 0, 6, 1)
 #define SYS_ID_AA64ISAR2_EL1    sys_reg_code(3, 0, 0, 6, 2)
 
+#define SYS_APIAKEYLO_EL1		sys_reg_code(3, 0, 2, 1, 0)
+#define SYS_APIAKEYHI_EL1		sys_reg_code(3, 0, 2, 1, 1)
+#define SYS_APIBKEYLO_EL1		sys_reg_code(3, 0, 2, 1, 2)
+#define SYS_APIBKEYHI_EL1		sys_reg_code(3, 0, 2, 1, 3)
+
+#define SYS_APDAKEYLO_EL1		sys_reg_code(3, 0, 2, 2, 0)
+#define SYS_APDAKEYHI_EL1		sys_reg_code(3, 0, 2, 2, 1)
+#define SYS_APDBKEYLO_EL1		sys_reg_code(3, 0, 2, 2, 2)
+#define SYS_APDBKEYHI_EL1		sys_reg_code(3, 0, 2, 2, 3)
+
+#define SYS_APGAKEYLO_EL1		sys_reg_code(3, 0, 2, 3, 0)
+#define SYS_APGAKEYHI_EL1		sys_reg_code(3, 0, 2, 3, 1)
+
 #define SYS_REG(reg) SYS_##reg
 
 /*
